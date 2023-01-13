@@ -22,7 +22,8 @@ import io.flutter.plugin.common.PluginRegistry;
 /**
  * FlutterAccessibilityServicePlugin
  */
-public class FlutterAccessibilityServicePlugin implements FlutterPlugin, ActivityAware, MethodCallHandler, PluginRegistry.ActivityResultListener, EventChannel.StreamHandler {
+public class FlutterAccessibilityServicePlugin implements FlutterPlugin, ActivityAware, MethodCallHandler,
+        PluginRegistry.ActivityResultListener, EventChannel.StreamHandler {
 
     private static final String CHANNEL_TAG = "x-slayer/accessibility_channel";
     private static final String EVENT_TAG = "x-slayer/accessibility_event";
@@ -72,7 +73,7 @@ public class FlutterAccessibilityServicePlugin implements FlutterPlugin, Activit
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(AccessibilityListener.ACCESSIBILITY_INTENT);
 
-            accessibilityReceiver = new AccessibilityReceiver(events);
+            accessibilityReceiver = new AccessibilityReceiver();
             context.registerReceiver(accessibilityReceiver, intentFilter);
 
             /// Set up listener intent
