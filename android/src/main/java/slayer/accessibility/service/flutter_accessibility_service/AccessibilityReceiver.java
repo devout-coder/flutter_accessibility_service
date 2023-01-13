@@ -3,18 +3,22 @@ package slayer.accessibility.service.flutter_accessibility_service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.HashMap;
 
 import io.flutter.plugin.common.EventChannel;
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.dart.DartExecutor;
 
 public class AccessibilityReceiver extends BroadcastReceiver {
 
-    private EventChannel.EventSink eventSink;
+//    private EventChannel.EventSink eventSink;
 
-    public AccessibilityReceiver(EventChannel.EventSink eventSink) {
-        this.eventSink = eventSink;
-    }
+//    public AccessibilityReceiver(EventChannel.EventSink eventSink) {
+//        this.eventSink = eventSink;
+//    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -33,6 +37,22 @@ public class AccessibilityReceiver extends BroadcastReceiver {
         data.put("windowType", intent.getIntExtra(AccessibilityListener.ACCESSIBILITY_WINDOW_TYPE, -1));
         data.put("screenBounds", intent.getSerializableExtra(AccessibilityListener.ACCESSIBILITY_SCREEN_BOUNDS));
         data.put("nodesText" , intent.getStringArrayListExtra(AccessibilityListener.ACCESSIBILITY_NODES_TEXT));
-        eventSink.success(data);
+
+        Log.d("debugging", data.toString());
+        FlutterEngine flutterEngine = new FlutterEngine(context);
+
+        flutterEngine
+                .getDartExecutor()
+                .executeDartEntrypoint(
+                        DartExecutor.DartEntrypoint.createDefault()
+                );
+
+        MethodChannel methodChannel = new MethodChannel(
+                flutterEngine.getDartExecutor().getBinaryMessenger(),
+                "alarm_method_channel"
+        );
+
+        methodChannel.invokeMethod("event", data);
+        // eventSink.success(data);
     }
 }
